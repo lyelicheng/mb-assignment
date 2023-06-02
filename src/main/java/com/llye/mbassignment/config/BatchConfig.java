@@ -69,7 +69,7 @@ public class BatchConfig {
     @Bean
     public FlatFileItemReader<RawData> reader() {
         FlatFileItemReader<RawData> reader = new FlatFileItemReader<>();
-        reader.setResource(new ClassPathResource("data.csv")); // Set the input file path
+        reader.setResource(new ClassPathResource("dataSource.txt")); // Set the input file path
 
         // Configure the line mapper to map each line to a Java object
         DefaultLineMapper<RawData> lineMapper = new DefaultLineMapper<>();
