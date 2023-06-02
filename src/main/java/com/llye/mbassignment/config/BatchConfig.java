@@ -70,6 +70,7 @@ public class BatchConfig {
     public FlatFileItemReader<RawData> reader() {
         FlatFileItemReader<RawData> reader = new FlatFileItemReader<>();
         reader.setResource(new ClassPathResource("dataSource.txt")); // Set the input file path
+        reader.setLinesToSkip(1); // Skip the header line
 
         // Configure the line mapper to map each line to a Java object
         DefaultLineMapper<RawData> lineMapper = new DefaultLineMapper<>();
