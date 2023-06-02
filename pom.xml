@@ -27,10 +27,16 @@
     </properties>
 
     <dependencies>
-        <!-- Spring Boot Initialisation -->
+        <!-- Spring Boot Web Initialisation -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Spring Boot Security Initialisation -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <!-- Spring Batch -->

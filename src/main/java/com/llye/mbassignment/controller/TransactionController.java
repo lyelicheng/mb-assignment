@@ -33,7 +33,9 @@ public class TransactionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TransactionDto> updateTransaction(@PathVariable("id") UUID id, @RequestBody TransactionRequestDto transactionRequestDto) {
+    public ResponseEntity<TransactionDto> updateTransaction(@RequestHeader(value = "api-token") String header,
+                                                            @PathVariable("id") UUID id,
+                                                            @RequestBody TransactionRequestDto transactionRequestDto) {
         TransactionDto transactionDto = transactionQueryService.updateTransaction(id, transactionRequestDto);
         if (transactionDto != null) {
             return ResponseEntity.ok(transactionDto);
