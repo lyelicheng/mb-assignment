@@ -1,5 +1,6 @@
 package com.llye.mbassignment.config;
 
+import com.llye.mbassignment.event.EventBus;
 import com.llye.mbassignment.model.RawData;
 import com.llye.mbassignment.repository.AccountRepository;
 import com.llye.mbassignment.repository.CustomerRepository;
@@ -33,6 +34,9 @@ public class BatchConfig {
 
     @Value("${file.input}")
     private String fileInput;
+
+    @Autowired
+    private EventBus eventBus;
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -91,6 +95,6 @@ public class BatchConfig {
 
     @Bean
     public BatchItemWriter writer() {
-        return new BatchItemWriter(customerRepository, accountRepository, transactionRepository);
+        return new BatchItemWriter(eventBus, customerRepository, accountRepository, transactionRepository);
     }
 }
