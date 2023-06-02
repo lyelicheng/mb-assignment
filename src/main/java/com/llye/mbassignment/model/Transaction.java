@@ -36,7 +36,7 @@ public class Transaction implements Serializable {
     @Version
     private Long version;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "account_id",
             foreignKey = @ForeignKey(name = "account_id_fk")

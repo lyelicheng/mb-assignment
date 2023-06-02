@@ -28,7 +28,7 @@ public class Account implements Serializable {
     @Column(name = "account_type")
     private String accountType;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "customer_id",
             foreignKey = @ForeignKey(name = "customer_id_fk")
