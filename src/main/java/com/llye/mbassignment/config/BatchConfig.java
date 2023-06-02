@@ -1,6 +1,9 @@
 package com.llye.mbassignment.config;
 
 import com.llye.mbassignment.model.RawData;
+import com.llye.mbassignment.repository.AccountRepository;
+import com.llye.mbassignment.repository.CustomerRepository;
+import com.llye.mbassignment.repository.TransactionRepository;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -10,6 +13,7 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +33,15 @@ public class BatchConfig {
 
     @Value("${file.input}")
     private String fileInput;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @Bean
     public Job importJob(JobListener listener) {
@@ -78,6 +91,6 @@ public class BatchConfig {
 
     @Bean
     public BatchItemWriter writer() {
-        return new BatchItemWriter();
+        return new BatchItemWriter(customerRepository, accountRepository, transactionRepository);
     }
 }

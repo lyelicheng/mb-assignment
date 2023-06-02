@@ -13,6 +13,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "account")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account implements Serializable {

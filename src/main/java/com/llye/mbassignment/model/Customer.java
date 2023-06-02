@@ -11,11 +11,11 @@ import java.util.List;
 @Entity
 @Table(name = "customer")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Customer implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(name = "first_name", nullable = false)

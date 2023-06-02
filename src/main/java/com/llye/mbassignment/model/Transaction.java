@@ -12,6 +12,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "transaction")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transaction implements Serializable {
