@@ -33,6 +33,9 @@ public class Transaction implements Serializable {
     @Column(name = "transaction_time", nullable = false)
     private String transactionTime;
 
+    @Version
+    private Long version;
+
     @ManyToOne(optional = false)
     @JoinColumn(
             name = "account_id",

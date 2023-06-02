@@ -1,12 +1,14 @@
 package com.llye.mbassignment.service;
 
 import com.llye.mbassignment.dto.TransactionDto;
+import com.llye.mbassignment.dto.TransactionRequestDto;
 import com.llye.mbassignment.model.Account;
 import com.llye.mbassignment.model.Customer;
 import com.llye.mbassignment.model.Transaction;
 import com.llye.mbassignment.repository.AccountQueryRepository;
 import com.llye.mbassignment.repository.CustomerQueryRepository;
 import com.llye.mbassignment.repository.TransactionQueryRepository;
+import com.llye.mbassignment.repository.TransactionRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,19 +17,23 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class TransactionQueryService {
     private final CustomerQueryRepository customerQueryRepository;
     private final AccountQueryRepository accountQueryRepository;
     private final TransactionQueryRepository transactionQueryRepository;
+    private final TransactionRepository transactionRepository;
 
     public TransactionQueryService(CustomerQueryRepository customerQueryRepository,
                                    AccountQueryRepository accountQueryRepository,
-                                   TransactionQueryRepository transactionQueryRepository) {
+                                   TransactionQueryRepository transactionQueryRepository,
+                                   TransactionRepository transactionRepository) {
         this.customerQueryRepository = customerQueryRepository;
         this.accountQueryRepository = accountQueryRepository;
         this.transactionQueryRepository = transactionQueryRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     public TransactionDto getTransactions(Integer pageNumber,
@@ -100,4 +106,17 @@ public class TransactionQueryService {
                              .transactions(transactionDtos)
                              .build();
     }
+
+    public TransactionDto updateTransaction(UUID id, TransactionRequestDto transactionRequestDto) {
+        Optional<Transaction> maybeTransaction = transactionQueryRepository.findById(id);
+        if (maybeTransaction.isPresent()) {
+            Transaction transaction = maybeTransaction.get();
+            transaction.setDescription(transactionRequestDto.getDescription());
+            transaction.setTransactionDate(transactionRequestDto.getTrxDate());
+            transaction.setTransactionTime(transactionRequestDto.getTrxTime());
+            transactionRepository.save(transaction);
+        }
+        return null;
+    }
+
 }

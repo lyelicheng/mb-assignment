@@ -1,12 +1,12 @@
 package com.llye.mbassignment.controller;
 
 import com.llye.mbassignment.dto.TransactionDto;
+import com.llye.mbassignment.dto.TransactionRequestDto;
 import com.llye.mbassignment.service.TransactionQueryService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/transactions")
@@ -28,6 +28,17 @@ public class TransactionController {
             return ResponseEntity.ok(transactionDto);
         } else {
             return ResponseEntity.notFound()
+                                 .build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TransactionDto> updateTransaction(@PathVariable("id") UUID id, @RequestBody TransactionRequestDto transactionRequestDto) {
+        TransactionDto transactionDto = transactionQueryService.updateTransaction(id, transactionRequestDto);
+        if (transactionDto != null) {
+            return ResponseEntity.ok(transactionDto);
+        } else {
+            return ResponseEntity.internalServerError()
                                  .build();
         }
     }
