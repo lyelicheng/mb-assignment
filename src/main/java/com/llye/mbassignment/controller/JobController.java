@@ -30,7 +30,8 @@ public class JobController {
 
     @GetMapping("/import-job")
     public void importJob(@RequestHeader(value = "api-token") String header) {
-        JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
+        JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+                                                                .toJobParameters();
         try {
             jobLauncher.run(batchConfig.importJob(new JobListener()), jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
