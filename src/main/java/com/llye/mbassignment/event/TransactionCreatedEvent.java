@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Time;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -18,8 +20,8 @@ public class TransactionCreatedEvent implements Event {
     private UUID id;
     private BigDecimal amount;
     private String description;
-    private String transactionDate;
-    private String transactionTime;
+    private Date transactionDate;
+    private Time transactionTime;
     private Long version;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;

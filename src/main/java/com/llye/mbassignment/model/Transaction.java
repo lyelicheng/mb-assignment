@@ -6,6 +6,8 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Time;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -28,10 +30,10 @@ public class Transaction implements Serializable {
     private String description;
 
     @Column(name = "transaction_date", nullable = false)
-    private String transactionDate;
+    private Date transactionDate;
 
     @Column(name = "transaction_time", nullable = false)
-    private String transactionTime;
+    private Time transactionTime;
 
     @Version
     private Long version;

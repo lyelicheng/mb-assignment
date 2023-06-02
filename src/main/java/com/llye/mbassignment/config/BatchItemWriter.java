@@ -11,11 +11,12 @@ import com.llye.mbassignment.model.Transaction;
 import com.llye.mbassignment.repository.AccountRepository;
 import com.llye.mbassignment.repository.CustomerRepository;
 import com.llye.mbassignment.repository.TransactionRepository;
+import com.llye.mbassignment.util.DateConverter;
+import com.llye.mbassignment.util.TimeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
 
-import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,10 +98,10 @@ public class BatchItemWriter<T> implements ItemWriter<RawData> {
     private Transaction buildTransaction(RawData rawData) {
         return Transaction.builder()
                           .id(UUID.randomUUID())
-                          .amount(new BigDecimal(rawData.getTrxAmount()))
+                          .amount(rawData.getTrxAmount())
                           .description(rawData.getDescription())
-                          .transactionDate(rawData.getTrxDate())
-                          .transactionTime(rawData.getTrxTime())
+                          .transactionDate(DateConverter.convertStringToDate(rawData.getTrxDate()))
+                          .transactionTime(TimeConverter.convertStringToTime(rawData.getTrxTime()))
                           .createdAt(ZonedDateTime.now())
                           .updatedAt(ZonedDateTime.now())
                           .build();

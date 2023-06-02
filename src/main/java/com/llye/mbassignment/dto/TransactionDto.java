@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Time;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -23,8 +25,8 @@ public class TransactionDto {
         private UUID id;
         private BigDecimal amount;
         private String description;
-        private String transactionDate;
-        private String transactionTime;
+        private Date transactionDate;
+        private Time transactionTime;
         private ZonedDateTime createdAt;
 
         public Transaction(com.llye.mbassignment.model.Transaction transaction) {

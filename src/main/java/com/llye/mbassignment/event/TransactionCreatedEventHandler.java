@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Time;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -30,8 +32,8 @@ public class TransactionCreatedEventHandler implements EventHandler {
         UUID id = transactionCreatedEvent.getId();
         BigDecimal amount = transactionCreatedEvent.getAmount();
         String description = transactionCreatedEvent.getDescription();
-        String transactionDate = transactionCreatedEvent.getTransactionDate();
-        String transactionTime = transactionCreatedEvent.getTransactionTime();
+        Date transactionDate = transactionCreatedEvent.getTransactionDate();
+        Time transactionTime = transactionCreatedEvent.getTransactionTime();
         Long version = transactionCreatedEvent.getVersion();
         ZonedDateTime createdAt = transactionCreatedEvent.getCreatedAt();
         ZonedDateTime updatedAt = transactionCreatedEvent.getUpdatedAt();
