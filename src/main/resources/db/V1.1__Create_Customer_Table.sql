@@ -1,7 +1,7 @@
-DROP TABLE customer IF EXISTS;
+DROP TABLE customer;
 
 CREATE TABLE customer  (
-    id BIGINT IDENTITY NOT NULL PRIMARY KEY,
+    id BIGINT NOT NULL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),

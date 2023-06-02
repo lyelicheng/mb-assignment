@@ -1,4 +1,4 @@
-DROP TABLE "transaction" IF EXISTS;
+DROP TABLE "transaction";
 
 CREATE TABLE "transaction"  (
     id UUID NOT NULL PRIMARY KEY,

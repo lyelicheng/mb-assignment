@@ -1,4 +1,4 @@
-DROP TABLE account IF EXISTS;
+DROP TABLE account;
 
 CREATE TABLE account  (
     id UUID NOT NULL PRIMARY KEY,
