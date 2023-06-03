@@ -3,6 +3,7 @@ package com.llye.mbassignment.controller;
 import com.llye.mbassignment.dto.TransactionDto;
 import com.llye.mbassignment.dto.TransactionRequestDto;
 import com.llye.mbassignment.service.TransactionQueryService;
+import com.llye.mbassignment.service.TransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +12,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/transactions")
 public class TransactionController {
+    private final TransactionService transactionService;
     private final TransactionQueryService transactionQueryService;
 
-    public TransactionController(TransactionQueryService transactionQueryService) {
+    public TransactionController(TransactionService transactionService,
+                                 TransactionQueryService transactionQueryService) {
+        this.transactionService = transactionService;
         this.transactionQueryService = transactionQueryService;
     }
 
@@ -36,7 +40,7 @@ public class TransactionController {
     public ResponseEntity<TransactionDto> updateTransaction(@RequestHeader(value = "api-token") String header,
                                                             @PathVariable("id") UUID id,
                                                             @RequestBody TransactionRequestDto transactionRequestDto) {
-        TransactionDto transactionDto = transactionQueryService.updateTransaction(id, transactionRequestDto);
+        TransactionDto transactionDto = transactionService.updateTransaction(id, transactionRequestDto);
         if (transactionDto != null) {
             return ResponseEntity.ok(transactionDto);
         } else {
