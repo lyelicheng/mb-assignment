@@ -66,5 +66,25 @@ You can use tools like cURL or Postman to interact with the API endpoints and pe
 ## Entity Relationship (ER) Diagram
 ![ER Diagram](image/entity_relationship_diagram.png)
 
+## Sample Results
+### Database After Import
+Customer Table
+![Customer Table](image/customer_table.png)
+
+Account Table
+![Account Table](image/account_table.png)
+
+Transaction Table
+![Transaction Table](image/transaction_table.png)
+
+### API
+`GET /transactions?pageNumber=0&pageSize=2&customerId=222&accountNumber=8872838299`
+![GET /transactions](image/get_transaction_filter_pagination.png)
+
+`PUT /transactions/c2f4e97b-824b-47fe-b559-67ca5204d670`
+![PUT /transactions/{id} API](image/put_transaction.png)
+
+![PUT /transactions/{id} DB](image/put_transaction_result.png)
+
 ## Attachment Link
 1. [Draw IO Diagram Link](https://app.diagrams.net/#G1zOytZ9Ej4Cs2XBXAJlzeJIDYyIHpYym-)
