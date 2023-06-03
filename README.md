@@ -56,3 +56,15 @@ The application also provides a RESTful API to retrieve and update records in th
 3. `PUT /transactions/{id}` (authentication required): Updates an existing transaction in the database.
 
 You can use tools like cURL or Postman to interact with the API endpoints and perform CRUD operations on the user records.
+
+## Activity Diagram
+![Activity Diagram](image/activity_diagram.png)
+
+## Class Diagram
+![Class Diagram](image/class_diagram.png)
+
+## Entity Relationship (ER) Diagram
+![ER Diagram](image/entity_relationship_diagram.png)
+
+## Attachment Link
+1. [Draw IO Diagram Link](https://app.diagrams.net/#G1zOytZ9Ej4Cs2XBXAJlzeJIDYyIHpYym-)
