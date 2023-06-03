@@ -22,7 +22,7 @@ public class Account implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "account_number", nullable = false)
+    @Column(name = "account_number", unique = true, nullable = false)
     private String accountNumber;
 
     @Column(name = "account_type")

@@ -15,15 +15,16 @@ import com.llye.mbassignment.util.DateConverter;
 import com.llye.mbassignment.util.TimeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
-public class BatchItemWriter<T> implements ItemWriter<RawData> {
+public class BatchItemWriter<T> implements ItemWriter<RawData>, StepExecutionListener {
     private static final Logger logger = LoggerFactory.getLogger(BatchItemWriter.class);
 
     private final EventBus eventBus;
@@ -41,43 +42,65 @@ public class BatchItemWriter<T> implements ItemWriter<RawData> {
         this.transactionRepository = transactionRepository;
     }
 
+    private Set<String> encounteredCustomerIds;
+    private Set<String> encounteredAccountNumbers;
+
+    @Override
+    public void beforeStep(StepExecution stepExecution) {
+        ExecutionContext jobExecutionContext = stepExecution.getJobExecution().getExecutionContext();
+        encounteredCustomerIds = (Set<String>) jobExecutionContext.get("encounteredCustomerIds");
+        encounteredAccountNumbers = (Set<String>) jobExecutionContext.get("encounteredAccountNumbers");
+    }
+
     @Override
     public void write(List<? extends RawData> list) {
         logger.debug("writing items to database ...");
-        List<Customer> customers = new ArrayList<>();
-        List<Account> accounts = new ArrayList<>();
-        List<Transaction> transactions = new ArrayList<>();
         list.forEach(data -> {
-            customers.add(buildCustomer(data));
-            accounts.add(buildAccount(data));
-            transactions.add(buildTransaction(data));
-        });
-        customerRepository.saveAll(customers);
-        // Publish the CustomerCreatedEvent
-        customers.forEach(customer -> {
-            CustomerCreatedEvent event = new CustomerCreatedEvent(customer);
-            eventBus.publish(event);
-        });
+            String customerId = data.getCustomerId();
+            String accountNumber = data.getAccountNumber();
 
-        accountRepository.saveAll(accounts);
-        // Publish the AccountCreatedEvent
-        accounts.forEach(account -> {
-            AccountCreatedEvent event = new AccountCreatedEvent(account);
-            eventBus.publish(event);
-        });
+            // Check if customer ID has been encountered before
+            Customer customer;
+            if (encounteredCustomerIds.contains(customerId)) {
+                Optional<Customer> maybeCustomer = customerRepository.findById(formatCustomerId(customerId));
+                customer = maybeCustomer.get();
+            } else {
+                customer = customerRepository.save(buildCustomer(data));
+                encounteredCustomerIds.add(customerId);
+            }
 
-        transactionRepository.saveAll(transactions);
-        // Publish the TransactionCreatedEvent
-        transactions.forEach(transaction -> {
-            TransactionCreatedEvent event = new TransactionCreatedEvent(transaction);
-            eventBus.publish(event);
+            // Check if account number has been encountered before
+            Account account;
+            if (encounteredAccountNumbers.contains(accountNumber)) {
+                Optional<Account> maybeAccount = accountRepository.findByAccountNumber(accountNumber);
+                account = maybeAccount.get();
+            } else {
+                Account newAccount = buildAccount(data);
+                newAccount.setCustomer(customer);
+                account = accountRepository.save(newAccount);
+                encounteredAccountNumbers.add(accountNumber);
+            }
+
+            Transaction newTransaction = buildTransaction(data);
+            newTransaction.setAccount(account);
+            Transaction transaction = transactionRepository.save(newTransaction);
+
+            CustomerCreatedEvent customerCreatedEvent = new CustomerCreatedEvent(customer);
+            eventBus.publish(customerCreatedEvent);
+            AccountCreatedEvent accountCreatedEvent = new AccountCreatedEvent(account);
+            eventBus.publish(accountCreatedEvent);
+            TransactionCreatedEvent transactionCreatedEvent = new TransactionCreatedEvent(transaction);
+            eventBus.publish(transactionCreatedEvent);
         });
     }
 
+    private Long formatCustomerId(String customerId) {
+        return Objects.nonNull(customerId) ? Long.parseLong(customerId) : 999L;
+    }
+
     private Customer buildCustomer(RawData rawData) {
-        Long customerId = Objects.nonNull(rawData.getCustomerId()) ? Long.parseLong(rawData.getCustomerId()) : 999L;
         return Customer.builder()
-                       .id(customerId)
+                       .id(formatCustomerId(rawData.getCustomerId()))
                        .firstName("John")
                        .lastName("Smith")
                        .createdAt(ZonedDateTime.now())
@@ -105,5 +128,10 @@ public class BatchItemWriter<T> implements ItemWriter<RawData> {
                           .createdAt(ZonedDateTime.now())
                           .updatedAt(ZonedDateTime.now())
                           .build();
+    }
+
+    @Override
+    public ExitStatus afterStep(StepExecution stepExecution) {
+        return null;
     }
 }

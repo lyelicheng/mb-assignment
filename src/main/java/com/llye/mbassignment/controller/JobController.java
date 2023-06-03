@@ -1,7 +1,6 @@
 package com.llye.mbassignment.controller;
 
 import com.llye.mbassignment.config.BatchConfig;
-import com.llye.mbassignment.config.JobListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameters;
@@ -33,7 +32,7 @@ public class JobController {
         JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
                                                                 .toJobParameters();
         try {
-            jobLauncher.run(batchConfig.importJob(new JobListener()), jobParameters);
+            jobLauncher.run(batchConfig.importJob(null), jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
             logger.error("JobController.importJob: error={} ", e.getMessage());
         }

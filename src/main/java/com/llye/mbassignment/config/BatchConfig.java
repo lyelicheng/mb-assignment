@@ -6,6 +6,7 @@ import com.llye.mbassignment.repository.AccountRepository;
 import com.llye.mbassignment.repository.CustomerRepository;
 import com.llye.mbassignment.repository.TransactionRepository;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -48,9 +49,14 @@ public class BatchConfig {
     private TransactionRepository transactionRepository;
 
     @Bean
-    public Job importJob(JobListener listener) {
+    public JobExecutionListener globalVariableListener() {
+        return new JobListener();
+    }
+
+    @Bean
+    public Job importJob(JobExecutionListener globalVariableListener) {
         return jobBuilderFactory.get("importJob")
-                                .listener(listener)
+                                .listener(globalVariableListener)
                                 .flow(importStep())
                                 .end()
                                 .build();
