@@ -20,9 +20,9 @@ public class TransactionController {
     @GetMapping()
     public ResponseEntity<TransactionDto> getTransactions(@RequestParam(name = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
                                                           @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
-                                                          @RequestParam(name = "customerId", required = false, defaultValue = "222") Long customerId,
-                                                          @RequestParam(name = "accountNumber", required = false, defaultValue = "8872838283") String accountNumber,
-                                                          @RequestParam(name = "description", required = false, defaultValue = "FUND TRANSFER") String description) {
+                                                          @RequestParam(name = "customerId", required = false) Long customerId,
+                                                          @RequestParam(name = "accountNumber", required = false) String accountNumber,
+                                                          @RequestParam(name = "description", required = false) String description) {
         TransactionDto transactionDto = transactionQueryService.getTransactions(pageNumber, pageSize, customerId, accountNumber, description);
         if (transactionDto != null) {
             return ResponseEntity.ok(transactionDto);
