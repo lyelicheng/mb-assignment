@@ -2,37 +2,23 @@ package com.llye.mbassignment.service;
 
 import com.llye.mbassignment.dto.TransactionDto;
 import com.llye.mbassignment.dto.TransactionRequestDto;
-import com.llye.mbassignment.model.Account;
-import com.llye.mbassignment.model.Customer;
 import com.llye.mbassignment.model.Transaction;
-import com.llye.mbassignment.repository.AccountQueryRepository;
-import com.llye.mbassignment.repository.CustomerQueryRepository;
 import com.llye.mbassignment.repository.TransactionQueryRepository;
 import com.llye.mbassignment.repository.TransactionRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class TransactionQueryService {
-    private final CustomerQueryRepository customerQueryRepository;
-    private final AccountQueryRepository accountQueryRepository;
     private final TransactionQueryRepository transactionQueryRepository;
     private final TransactionRepository transactionRepository;
 
-    public TransactionQueryService(CustomerQueryRepository customerQueryRepository,
-                                   AccountQueryRepository accountQueryRepository,
-                                   TransactionQueryRepository transactionQueryRepository,
+    public TransactionQueryService(TransactionQueryRepository transactionQueryRepository,
                                    TransactionRepository transactionRepository) {
-        this.customerQueryRepository = customerQueryRepository;
-        this.accountQueryRepository = accountQueryRepository;
         this.transactionQueryRepository = transactionQueryRepository;
         this.transactionRepository = transactionRepository;
     }
@@ -43,61 +29,30 @@ public class TransactionQueryService {
                                           Long customerId,
                                           String accountNumber,
                                           String description) {
-        List<Transaction> transactions;
+        List<Transaction> transactions = transactionQueryRepository.findAll();
+        List<Transaction> filteredTrasactions = transactions.stream()
+                                                            .filter(transaction -> isFilterMatch(transaction, customerId, accountNumber, description))
+                                                            .skip((long) pageSize * pageNumber)
+                                                            .limit(pageSize)
+                                                            .toList();
+        return toTransactionDto(filteredTrasactions);
+    }
+
+    private boolean isFilterMatch(Transaction transaction, Long customerId, String accountNumber, String description) {
+        boolean match = true;
         if (customerId != null) {
-            transactions = findAllByCustomerId(customerId, pageNumber, pageSize);
-        } else if (accountNumber != null) {
-            transactions = findAllByAccountNumber(accountNumber, pageNumber, pageSize);
-        } else if (description != null) {
-            transactions = findAllByDescription(description, pageNumber, pageSize);
-        } else {
-            transactions = findAll(pageNumber, pageSize);
+            match = customerId.compareTo(transaction.getAccount()
+                                                    .getCustomer()
+                                                    .getId()) == 0;
         }
-        return toTransactionDto(transactions);
-    }
-
-    private List<Transaction> findAllByCustomerId(Long customerId, Integer pageNumber, Integer pageSize) {
-        Optional<Customer> maybeCustomer = customerQueryRepository.findById(customerId);
-        if (maybeCustomer.isEmpty()) {
-            return Collections.emptyList();
+        if (accountNumber != null) {
+            match = match && accountNumber.equalsIgnoreCase(transaction.getAccount()
+                                                                       .getAccountNumber());
         }
-
-        List<Account> accounts = maybeCustomer.get()
-                                              .getAccounts();
-
-        return accounts.stream()
-                       .flatMap(account -> account.getTransactions()
-                                                  .stream())
-                       .skip((long) pageSize * pageNumber)
-                       .limit(pageSize)
-                       .toList();
-    }
-
-    private List<Transaction> findAllByAccountNumber(String accountNumber, Integer pageNumber, Integer pageSize) {
-        Optional<Account> maybeAccount = accountQueryRepository.findByAccountNumber(accountNumber);
-        if (maybeAccount.isEmpty()) {
-            return Collections.emptyList();
+        if (description != null) {
+            match = match && description.equalsIgnoreCase(transaction.getDescription());
         }
-
-        return maybeAccount.get()
-                           .getTransactions()
-                           .stream()
-                           .skip((long) pageSize * pageNumber)
-                           .limit(pageSize)
-                           .toList();
-
-    }
-
-    private List<Transaction> findAllByDescription(String description, Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<Transaction> transactionPage = transactionQueryRepository.findByDescription(description, pageable);
-        return transactionPage.getContent();
-    }
-
-    private List<Transaction> findAll(Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<Transaction> transactionPage = transactionQueryRepository.findAll(pageable);
-        return transactionPage.getContent();
+        return match;
     }
 
     private TransactionDto toTransactionDto(List<Transaction> transactions) {
