@@ -45,13 +45,14 @@ The input data for the batch job is a text file located in the src/main/resource
 
 The application also provides a RESTful API to retrieve and update records in the database. The API endpoints and their functionalities are as follows:
 
-1. `GET /transactions`: Retrieves transactions based on the provided query parameters.
+1. `GET /jobs/import-job` (authentication required): Triggers the batch job to process the input file `dataSource.txt`
+2. `GET /transactions`: Retrieves transactions based on the provided query parameters.
    - Query Parameters:
      - pageNumber: The page number of the results (optional, default: 0).
      - pageSize: The number of transactions per page (optional, default: 10).
      - customerId: Filter transactions by customer ID (optional).
      - accountNumber: Filter transactions by account number (optional).
      - description: Filter transactions by description (optional).
-2. `PUT /transactions/{id}`: Updates an existing transaction in the database.
+3. `PUT /transactions/{id}` (authentication required): Updates an existing transaction in the database.
 
 You can use tools like cURL or Postman to interact with the API endpoints and perform CRUD operations on the user records.
