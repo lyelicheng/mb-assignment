@@ -31,14 +31,14 @@ public class TransactionQueryService {
                                           String description) {
         List<Transaction> transactions = transactionQueryRepository.findAll();
         List<Transaction> filteredTrasactions = transactions.stream()
-                                                            .filter(transaction -> isFilterMatch(transaction, customerId, accountNumber, description))
+                                                            .filter(transaction -> isFilterMatched(transaction, customerId, accountNumber, description))
                                                             .skip((long) pageSize * pageNumber)
                                                             .limit(pageSize)
                                                             .toList();
         return toTransactionDto(filteredTrasactions);
     }
 
-    private boolean isFilterMatch(Transaction transaction, Long customerId, String accountNumber, String description) {
+    private boolean isFilterMatched(Transaction transaction, Long customerId, String accountNumber, String description) {
         boolean match = true;
         if (customerId != null) {
             match = customerId.compareTo(transaction.getAccount()
@@ -66,14 +66,19 @@ public class TransactionQueryService {
 
     public TransactionDto updateTransaction(UUID id, TransactionRequestDto transactionRequestDto) {
         Optional<Transaction> maybeTransaction = transactionQueryRepository.findById(id);
-        if (maybeTransaction.isPresent()) {
-            Transaction transaction = maybeTransaction.get();
-            transaction.setDescription(transactionRequestDto.getDescription());
-            transaction.setTransactionDate(transactionRequestDto.getTrxDate());
-            transaction.setTransactionTime(transactionRequestDto.getTrxTime());
-            transactionRepository.save(transaction);
+        if (maybeTransaction.isEmpty()) {
+            return null;
         }
-        return null;
+        Transaction transaction = maybeTransaction.get();
+        Optional.ofNullable(transactionRequestDto.getDescription())
+                .ifPresent(transaction::setDescription);
+        Optional.ofNullable(transactionRequestDto.getTransactionDate())
+                .ifPresent(transaction::setTransactionDate);
+        Optional.ofNullable(transactionRequestDto.getTransactionTime())
+                .ifPresent(transaction::setTransactionTime);
+        Transaction updatedTransaction = transactionRepository.save(transaction);
+        return TransactionDto.builder()
+                             .transactions(List.of(new TransactionDto.Transaction(updatedTransaction)))
+                             .build();
     }
-
 }

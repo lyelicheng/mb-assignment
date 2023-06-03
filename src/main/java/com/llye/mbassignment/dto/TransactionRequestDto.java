@@ -14,6 +14,6 @@ import java.sql.Time;
 @Data
 public class TransactionRequestDto {
     private String description;
-    private Date trxDate;
-    private Time trxTime;
+    private Date transactionDate;
+    private Time transactionTime;
 }
