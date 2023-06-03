@@ -66,6 +66,7 @@ public class DBConfig {
         return localContainerEntityManagerFactoryBean;
     }
 
+    @Primary
     @Bean(name = "platformTransactionManager")
     public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
