@@ -57,6 +57,16 @@ The application also provides a RESTful API to retrieve and update records in th
 
 You can use tools like cURL or Postman to interact with the API endpoints and perform CRUD operations on the user records.
 
+## Design Patterns
+
+### CQRS (Command Query Responsibility Segregation)
+This repository utilizes the CQRS (Command Query Responsibility Segregation) architectural pattern to manage the system's data and operations. The main idea behind CQRS is to optimize the system for different types of operations. By segregating the responsibilities, read operations can be optimized for fast and efficient data retrieval, while write operations can be optimized for consistency and transactional integrity. This separation allows each model to be independently scaled and optimized according to its specific requirements.
+
+### Event Bus
+In addition to utilizing the CQRS architectural pattern, this repository also incorporates an Event Bus as part of its implementation. Event Bus acts as a communication channel through which different parts of the system can publish and subscribe to events. When an event is published on the bus, any subscribed components that are interested in that event will receive it and can take appropriate actions. 
+
+![CQRS Event Bus](image/cqrs_event_bus.png)
+
 ## Activity Diagram
 ![Activity Diagram](image/activity_diagram.png)
 
