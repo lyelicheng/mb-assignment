@@ -27,6 +27,8 @@ public class TransactionDto {
         private String description;
         private Date transactionDate;
         private Time transactionTime;
+        private String accountNumber;
+        private String customerId;
         private ZonedDateTime createdAt;
 
         public Transaction(com.llye.mbassignment.model.Transaction transaction) {
@@ -35,6 +37,8 @@ public class TransactionDto {
             this.description = transaction.getDescription();
             this.transactionDate = transaction.getTransactionDate();
             this.transactionTime = transaction.getTransactionTime();
+            this.accountNumber = transaction.getAccount().getAccountNumber();
+            this.customerId = transaction.getAccount().getCustomer().getId().toString();
             this.createdAt = transaction.getCreatedAt();
         }
     }
