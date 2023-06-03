@@ -20,7 +20,7 @@ To get started with the application, follow these steps:
 2. Build the project using Maven:
    ```bash
    mvn clean install
-3. Export environment variables:
+3. Export the environment variables:
    ```bash
    export DATASOURCE_URL=<datasource_url>
    export DATASOURCE_SECRET=<datasource_secret>
