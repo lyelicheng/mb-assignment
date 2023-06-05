@@ -96,5 +96,5 @@ Transaction Table
 
 ![PUT /transactions/{id} DB](image/put_transaction_result.png)
 
-## Attachment Link
-1. [Draw IO Diagram Link](https://app.diagrams.net/#G1zOytZ9Ej4Cs2XBXAJlzeJIDYyIHpYym-)
+## Attachment Links
+- [Draw IO Diagram Link](https://app.diagrams.net/#G1zOytZ9Ej4Cs2XBXAJlzeJIDYyIHpYym-)
